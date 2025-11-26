@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Volunteer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -18,7 +19,21 @@ class LoginController extends Controller
 
             if (Auth::attempt($credentials, $request->boolean('remember'))) {
                 $request->session()->regenerate();
-                return redirect('/')->with('success', 'Logged in successfully!');
+                $user = Auth::user();
+
+                // Redirect based on role
+                if ($user->role === 'admin') {
+                    return redirect('/polls/manage')->with('success', 'Logged in successfully!');
+                }
+
+                // For volunteers, redirect to volunteer dashboard if they have a profile
+                $volunteer = Volunteer::where('user_id', $user->id)->first();
+                if ($volunteer) {
+                    return redirect("/volunteer/{$volunteer->id}/dashboard")->with('success', 'Logged in successfully!');
+                }
+
+                // If no volunteer profile yet, redirect to form
+                return redirect('/volunteer-form')->with('success', 'Logged in! Please complete your volunteer profile.');
             }
 
             throw ValidationException::withMessages([

@@ -447,6 +447,26 @@
         <!-- Sign Up Form -->
         <form method="POST" action="{{ url('/signup') }}">
             @csrf
+            
+            <!-- Role Selection -->
+            <div class="form-group">
+                <label for="role">
+                    I am a <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <select 
+                        id="role" 
+                        name="role"
+                        required
+                        class="input-field"
+                    >
+                        <option value="">Select your role</option>
+                        <option value="volunteer">Volunteer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+
             <!-- Full Name -->
             <div class="form-group">
                 <label for="fullname">

@@ -17,17 +17,24 @@ class SignupController extends Controller
                 'fullname' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
+                'role' => 'required|in:admin,volunteer',
             ]);
 
             $user = User::create([
                 'name' => $validated['fullname'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
+                'role' => $validated['role'],
             ]);
 
             Auth::login($user);
 
-            return redirect('/')->with('success', 'Account created successfully! Welcome aboard.');
+            // Redirect based on role
+            if ($user->role === 'admin') {
+                return redirect('/polls/manage')->with('success', 'Welcome Admin! Manage polls here.');
+            }
+
+            return redirect('/volunteer-form')->with('success', 'Account created successfully! Please complete your volunteer profile.');
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         }

@@ -321,23 +321,23 @@
                     <label>Availability <span class="required">*</span></label>
                     <div class="checkbox-group">
                         <div class="checkbox-option">
-                            <input type="checkbox" id="weekdays" name="availability" value="weekdays">
+                            <input type="checkbox" id="weekdays" name="availability[]" value="weekdays">
                             <label for="weekdays">Weekdays</label>
                         </div>
                         <div class="checkbox-option">
-                            <input type="checkbox" id="weekends" name="availability" value="weekends">
+                            <input type="checkbox" id="weekends" name="availability[]" value="weekends">
                             <label for="weekends">Weekends</label>
                         </div>
                         <div class="checkbox-option">
-                            <input type="checkbox" id="mornings" name="availability" value="mornings">
+                            <input type="checkbox" id="mornings" name="availability[]" value="mornings">
                             <label for="mornings">Mornings</label>
                         </div>
                         <div class="checkbox-option">
-                            <input type="checkbox" id="afternoons" name="availability" value="afternoons">
+                            <input type="checkbox" id="afternoons" name="availability[]" value="afternoons">
                             <label for="afternoons">Afternoons</label>
                         </div>
                         <div class="checkbox-option">
-                            <input type="checkbox" id="evenings" name="availability" value="evenings">
+                            <input type="checkbox" id="evenings" name="availability[]" value="evenings">
                             <label for="evenings">Evenings</label>
                         </div>
                     </div>
@@ -412,7 +412,8 @@
     <script>
         // Client-side validation
         document.querySelector('form').addEventListener('submit', function(e) {
-            const availabilityChecked = document.querySelectorAll('input[name="availability"]:checked').length;
+            // name is "availability[]" for checkbox group
+            const availabilityChecked = document.querySelectorAll('input[name="availability[]"]:checked').length;
             if (availabilityChecked === 0) {
                 e.preventDefault();
                 alert('Please select at least one availability option.');
