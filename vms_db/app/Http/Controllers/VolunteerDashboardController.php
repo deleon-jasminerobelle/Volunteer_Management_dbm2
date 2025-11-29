@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Volunteer;
 use App\Models\Poll;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class VolunteerDashboardController extends Controller
 {
@@ -27,10 +28,56 @@ class VolunteerDashboardController extends Controller
             ];
         })->toArray();
 
-        return view('volunteer-dashboard', [
+        return view('volunteer-dashboard-new', [
             'volunteer' => $volunteer,
             'polls' => $polls,
-            'csrf' => csrf_token(),
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $volunteer = Volunteer::findOrFail($id);
+
+        try {
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255',
+                'mobile' => 'required|string|max:20',
+                'facebook_name' => 'nullable|string|max:255',
+                'birthdate' => 'required|date',
+                'address' => 'required|string',
+                'education' => 'required|string|max:100',
+                'training' => 'nullable|string',
+                'skills' => 'nullable|string',
+                'classes' => 'nullable|string',
+                'availability' => 'required|array|min:1',
+                'volunteer_area' => 'required|string|max:255',
+                'lifegroup' => 'required|in:yes,no',
+                'emergency_name' => 'required|string|max:255',
+                'emergency_relation' => 'required|string|max:255',
+                'emergency_phone' => 'required|string|max:20',
+                'emergency_email' => 'nullable|string|email|max:255',
+            ]);
+
+            // Convert availability array to string
+            $validated['availability'] = implode(', ', $validated['availability']);
+
+            $volunteer->update($validated);
+
+            return redirect("/volunteer/{$id}/dashboard")
+                ->with('success', 'Profile updated successfully!');
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        }
+    }
+
+    public function delete($id)
+    {
+        $volunteer = Volunteer::findOrFail($id);
+        $volunteer->delete();
+
+        return redirect('/volunteer-form')
+            ->with('success', 'Volunteer profile deleted. You can create a new profile.');
     }
 }

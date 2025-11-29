@@ -24,7 +24,7 @@ Route::get('/login', function () {
 
 Route::post('/login', [LoginController::class, 'store']);
 
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/volunteer-form', function () {
     return view('volunteer-form');
@@ -32,7 +32,9 @@ Route::get('/volunteer-form', function () {
 
 Route::post('/volunteer-register', [VolunteerController::class, 'store']);
  
-Route::get('/volunteer/{id}/dashboard', [VolunteerDashboardController::class, 'show']);
+Route::get('/volunteer/{id}/dashboard', [VolunteerDashboardController::class, 'show'])->name('volunteer.dashboard');
+Route::put('/volunteer/{id}/update', [VolunteerDashboardController::class, 'update'])->name('volunteer.update');
+Route::delete('/volunteer/{id}/delete', [VolunteerDashboardController::class, 'delete'])->name('volunteer.delete');
 
 // API vote endpoint
 Route::post('/api/polls/{poll}/vote', [PollController::class, 'vote']);
